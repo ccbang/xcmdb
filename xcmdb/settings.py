@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cmdb',
+    'rest_framework',
+    'cmdb.apps.CmdbConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,8 +56,7 @@ ROOT_URLCONF = 'xcmdb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,12 +88,13 @@ DATABASES = {
         'NAME': 'cmdb',
         'USER': 'postgres',
         'PASSWORD': 'dragonDB.',
-        'HOST': '127.0.0.1',
+        'HOST': '192.168.2.183',
         'PORT': '5432',
     }
 }
 
 
+AUTH_USER_MODEL = "cmdb.User"
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -112,6 +113,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTHENTICATION_BACKENDS = (
+#     'cmdb.customizingAuthBanKend.CustomizingBackend'
+# )
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -131,3 +135,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'cmdb.apiPermission.BlacklistPermission'
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
+}
