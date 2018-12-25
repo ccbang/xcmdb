@@ -38,34 +38,27 @@ class User(AbstractBaseUser):
     position = models.CharField('职位', blank=True, max_length=100)
     api_key = models.CharField('API接口密钥', blank=True, max_length=100)
     ssh_pub = models.TextField('SSH公钥', blank=True)
+    avatar = models.ImageField(blank=True, null=True)
     group = models.ForeignKey(
         'Group',
         null=True,
         blank=True,
         on_delete=models.SET_NULL
     )
-    role = models.ManyToManyField('Role', blank=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["api_key"]
     objects = MyUserManager()
 
-    def get_all_perssion(self):
+    def get_all_permission(self):
         perm = set()
 
-        # 从角色组中获得操作权限
-        if self.group is not None:
-            xperm_roles = self.group.role_set.all()
-            for one_role in xperm_roles:
-                for one_perm in one_role.permission:
-                    perm.add(one_perm)
-
-        # 从自己角色中获得权限
-        if self.role is not None:
-            for one_role in self.role:
-                for one_perm in one_role.permission:
-                    perm.add(one_perm)
+        # 从角色中获得操作权限
+        if hasattr(self, 'members'):
+            members = self.members.all()
+            for member in members:
+                perm.update(member.role.permission.values_list('codename', flat=True))
 
         return perm
 

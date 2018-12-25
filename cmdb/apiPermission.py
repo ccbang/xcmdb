@@ -1,5 +1,54 @@
 from rest_framework import permissions
-from .models.xroleModel import User
+from cmdb.models import User
+from rest_framework import permissions
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.schemas import ManualSchema
+import coreapi
+import coreschema
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    schema = ManualSchema(fields=[
+        coreapi.Field(
+            "username",
+            required=True,
+            location="form",
+            description="用户名",
+            schema=coreschema.String()
+        ),
+        coreapi.Field(
+            "password",
+            required=True,
+            location="form",
+            description="用户密码",
+            schema=coreschema.String()
+        ),
+    ], description="通过基本认证获取token")
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        print(type(user))
+        token, created = Token.objects.get_or_create(user=user)
+        role = ["user", "admin"] if user.is_staff else ["user"]
+
+        return Response({
+            'status': "ok",
+            'type': "account",
+            "currentAuthority": {
+                'token': token.key,
+                'id': user.pk,
+                'email': user.email,
+                'name': user.username,
+                'role': role,
+            }
+        })
+
 
 
 class BlacklistPermission(permissions.BasePermission):

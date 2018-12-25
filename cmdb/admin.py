@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from cmdb.models import User, Role, Group, XPermission, PermissionAction, Machines
+from cmdb.models import User, Role, Group, AuthPermission, AuthGroup, JobHost, Job, Host, RoleTemplate, Tasks
 
 
 class UserCreationForm(forms.ModelForm):
@@ -87,6 +87,10 @@ admin.site.register(User, UserAdmin)
 # unregister the Group model from admin.
 admin.site.register(Group)
 admin.site.register(Role)
-admin.site.register(XPermission)
-admin.site.register(PermissionAction)
-admin.site.register(Machines)
+admin.site.register(AuthGroup)
+admin.site.register(AuthPermission)
+admin.site.register(Host)
+admin.site.register(Job)
+admin.site.register(JobHost)
+admin.site.register(RoleTemplate)
+admin.site.register(Tasks)

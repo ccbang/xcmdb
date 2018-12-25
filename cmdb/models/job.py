@@ -21,6 +21,6 @@ class Job(models.Model):
 
 
 class JobHost(models.Model):
-    host = models.ForeignKey("Host", related_name='jobs')
+    host = models.ForeignKey("Host", related_name='jobs', on_delete=models.SET_NULL, null=True, blank=True)
     result = models.TextField()
     status = models.CharField(max_length=100, choices=STATUS_CHOICES)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.models import  ContentType
 
 
 class AuthGroup(models.Model):
@@ -9,7 +10,7 @@ class AuthGroup(models.Model):
 
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    content_type = models.ForeignKey(ContentType, models.DO_NOTHING)
     codename = models.CharField(max_length=100)
 
     class Meta:
