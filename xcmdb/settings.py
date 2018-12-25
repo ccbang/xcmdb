@@ -142,5 +142,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'cmdb.customPagination.CustomPagination',
+    'PAGE_SIZE': 10
 }
