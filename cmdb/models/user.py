@@ -39,6 +39,7 @@ class User(AbstractBaseUser):
     api_key = models.CharField('API接口密钥', blank=True, max_length=100)
     ssh_pub = models.TextField('SSH公钥', blank=True)
     avatar = models.ImageField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     group = models.ForeignKey(
         'Group',
         null=True,

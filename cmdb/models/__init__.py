@@ -17,9 +17,10 @@ from .project import Project, Member
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
+    # 当收到users表创建用户时将触发创建用户对应的token，用于验证登陆
     if created:
         Token.objects.create(user=instance)
-        if not instance.avatar:
+        if not instance.avatar:  # 如果用户没有头像，则自动创建一个
             avatar_name = "{}/avatar/{}.png".format(
                 settings.MEDIA_ROOT, instance.username)
             with open(avatar_name, 'wb') as atf:
