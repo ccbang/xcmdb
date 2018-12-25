@@ -2,6 +2,9 @@
 
 - django >=2.0
 - ansible
+- djangorestframework
+- django_filters
+- avatar_generator
 
 ```config
 现在处于开发阶段，大部分功能会随时改变，仅供大家讨论学习。 
