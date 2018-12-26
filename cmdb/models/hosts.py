@@ -2,6 +2,20 @@ from django.db import models
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 
+SU = 'success'
+PR = "processing"
+DE = "default"
+ER = "error"
+WA = "warning"
+
+STATUS_CHOICES = (
+    (SU, '已上线'),
+    (PR, '运行中'),
+    (DE, '未分配'),
+    (ER, '异常'),
+    (WA, '警告'),
+)
+
 
 class Host(models.Model):
     project = models.ManyToManyField(
@@ -10,8 +24,9 @@ class Host(models.Model):
         blank=True,
     )
     description = models.TextField()
-    enabled = models.BooleanField()
-    variables = JSONField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DE)
+    enabled = models.BooleanField(default=True)
+    variables = JSONField(default=dict)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -36,11 +51,10 @@ class Host(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     capacity = models.IntegerField(default=0)
-    version = models.CharField(max_length=24)
-    last_isolated_check = models.DateTimeField(blank=True, null=True)
-    capacity_adjustment = models.DecimalField(max_digits=3, decimal_places=2)
     cpu = models.IntegerField()
-    memory = models.BigIntegerField()
-    cpu_capacity = models.IntegerField()
-    mem_capacity = models.IntegerField()
-    managed_by_policy = models.BooleanField()
+    memory = models.BigIntegerField(default=0)
+    cpu_capacity = models.IntegerField(default=0)
+    mem_capacity = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ('-created', 'hostname')

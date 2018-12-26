@@ -2,8 +2,9 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Permission, Group
 
-from cmdb.models import User, Role, Group, AuthPermission, AuthGroup, JobHost, Job, Host, RoleTemplate, Tasks
+from cmdb.models import User, Role, RoleGroup, JobHost, Job, Host, RoleTemplate, Tasks
 
 
 class UserCreationForm(forms.ModelForm):
@@ -44,7 +45,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'password', 'position', 'api_key', 'ssh_pub',
-                  'is_active', 'is_admin')
+                  'is_active', 'is_superuser')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -61,34 +62,31 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('username', 'position', 'is_admin', 'api_key', 'ssh_pub')
-    list_filter = ('is_admin',)
+    list_display = ('username', 'position', 'is_superuser', 'api_key', 'ssh_pub')
+    list_filter = ('is_superuser',)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('api_key',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_superuser',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'api_key', 'password1', 'password2')}
+            'fields': ('username', 'api_key', 'password1', 'password2', 'name')}
          ),
     )
     search_fields = ('username',)
     ordering = ('username',)
     filter_horizontal = ()
 
-
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
-admin.site.register(Group)
+admin.site.register(RoleGroup)
 admin.site.register(Role)
-admin.site.register(AuthGroup)
-admin.site.register(AuthPermission)
 admin.site.register(Host)
 admin.site.register(Job)
 admin.site.register(JobHost)

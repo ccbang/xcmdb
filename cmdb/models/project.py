@@ -19,7 +19,13 @@ class Member(models.Model):
         on_delete=models.CASCADE
     )
 
+    class Meta:
+        ordering = ("project", 'role')
+
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+
+    class Meta:
+        ordering = ("name",)

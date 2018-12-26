@@ -15,4 +15,5 @@ class AuthPermission(models.Model):
 
     class Meta:
         unique_together = (('content_type', 'codename'),)
+        ordering = ("codename", )
 

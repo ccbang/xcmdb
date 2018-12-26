@@ -19,8 +19,14 @@ class Job(models.Model):
     done_time = models.DateTimeField()
     playbook = JSONField()
 
+    class Meta:
+        ordering = ('-done_time', )
+
 
 class JobHost(models.Model):
     host = models.ForeignKey("Host", related_name='jobs', on_delete=models.SET_NULL, null=True, blank=True)
     result = models.TextField()
     status = models.CharField(max_length=100, choices=STATUS_CHOICES)
+
+    class Meta:
+        ordering = ('status', )
