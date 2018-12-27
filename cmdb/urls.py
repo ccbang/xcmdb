@@ -8,14 +8,15 @@ from cmdb.views.member import MemberViewSet
 from cmdb.views.project import ProjectViewSet
 from cmdb.views.role import RoleViewSet
 from cmdb.views.user import UserViewSet
+from cmdb.views.credentials import CredentialsViewSet
 from cmdb.apiPermission import CustomAuthToken
-
 
 router.register(r'host', HostViewSet, base_name='host')
 router.register(r'member', MemberViewSet, base_name='member')
 router.register(r'project', ProjectViewSet, base_name='project')
 router.register(r'role', RoleViewSet, base_name='role')
 router.register(r'user', UserViewSet, base_name='user')
+router.register(r'credentials', CredentialsViewSet, base_name='credentials')
 
 urlpatterns = [
     path("auth/", CustomAuthToken.as_view(), name="auth"),

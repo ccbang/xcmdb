@@ -11,6 +11,7 @@ from .user import  User
 from .role import Role, RoleGroup
 from .template import Tasks, RoleTemplate
 from .project import Project, Member
+from .credentials import Credentials
 
 
 
